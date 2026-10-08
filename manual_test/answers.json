@@ -1,0 +1,152 @@
+{
+ "newmom-000-A:0": {
+  "value": 0.4,
+  "trust": 0.5,
+  "comprehension": 0.45,
+  "friction": 0.05,
+  "curiosity": 0.35,
+  "concerns": [
+   "unclear_value"
+  ],
+  "thought": "Postpartum, okay, right topic. But a companion? I need to know if what is happening to me is normal.",
+  "emotion": "unsure"
+ },
+ "newmom-000-B:0": {
+  "value": 0.72,
+  "trust": 0.48,
+  "comprehension": 0.7,
+  "friction": 0.05,
+  "curiosity": 0.3,
+  "concerns": [
+   "low_trust"
+  ],
+  "thought": "That is literally me right now. In seconds though? Who is telling me what is normal, a real nurse?",
+  "emotion": "hopeful"
+ },
+ "partner-000-A:0": {
+  "value": 0.3,
+  "trust": 0.35,
+  "comprehension": 0.6,
+  "friction": 0.05,
+  "curiosity": 0.55,
+  "concerns": [
+   "generic",
+   "no_social_proof"
+  ],
+  "thought": "Holistic, AI-powered, zero ratings. Sounds like every wellness app, and nothing says who is behind the advice.",
+  "emotion": "skeptical"
+ },
+ "partner-000-A:1": {
+  "value": 0.28,
+  "trust": 0.32,
+  "comprehension": 0.62,
+  "friction": 0.08,
+  "curiosity": 0.3,
+  "concerns": [
+   "no_social_proof",
+   "generic"
+  ],
+  "thought": "Still no reviews, and it ties her health data to her contact info. Nothing here tells me how I can help her.",
+  "emotion": "unconvinced"
+ },
+ "partner-000-A:2": {
+  "value": 0.3,
+  "trust": 0.32,
+  "comprehension": 0.7,
+  "friction": 0.08,
+  "curiosity": 0.15,
+  "concerns": [
+   "generic"
+  ],
+  "thought": "Okay, it is a mood tracker with a community. Fine, but I could get that anywhere.",
+  "emotion": "indifferent"
+ },
+ "partner-000-B:0": {
+  "value": 0.6,
+  "trust": 0.4,
+  "comprehension": 0.75,
+  "friction": 0.05,
+  "curiosity": 0.55,
+  "concerns": [
+   "low_trust",
+   "no_social_proof"
+  ],
+  "thought": "Clear what it does: is this normal or call the doctor. But it is medical advice from someone I have never heard of, with no ratings.",
+  "emotion": "cautious"
+ },
+ "secondtime-000-A:0": {
+  "value": 0.15,
+  "trust": 0.45,
+  "comprehension": 0.55,
+  "friction": 0.05,
+  "curiosity": 0.2,
+  "concerns": [
+   "generic",
+   "irrelevant"
+  ],
+  "thought": "Holistic wellness for new moms. I am not new at this, and I already know the fourth trimester talk.",
+  "emotion": "bored"
+ },
+ "secondtime-000-A:1": {
+  "value": 0.12,
+  "trust": 0.42,
+  "comprehension": 0.6,
+  "friction": 0.05,
+  "curiosity": 0.1,
+  "concerns": [
+   "generic"
+  ],
+  "thought": "All-in-one, holistic, AI-powered. Nothing about juggling a toddler. Next.",
+  "emotion": "bored"
+ },
+ "secondtime-000-A:2": {
+  "value": 0.12,
+  "trust": 0.38,
+  "comprehension": 0.65,
+  "friction": 0.05,
+  "curiosity": 0.05,
+  "concerns": [
+   "generic",
+   "no_social_proof"
+  ],
+  "thought": "Self-care tips and a community. I had all of that last time and it did not help. Nobody has even reviewed it.",
+  "emotion": "dismissive"
+ },
+ "secondtime-000-B:0": {
+  "value": 0.3,
+  "trust": 0.45,
+  "comprehension": 0.72,
+  "friction": 0.05,
+  "curiosity": 0.35,
+  "concerns": [
+   "irrelevant"
+  ],
+  "thought": "Clearer than most, but what is normal after birth is the part I already know. Is there anything for round two?",
+  "emotion": "lukewarm"
+ },
+ "secondtime-000-B:1": {
+  "value": 0.3,
+  "trust": 0.45,
+  "comprehension": 0.75,
+  "friction": 0.05,
+  "curiosity": 0.25,
+  "concerns": [
+   "irrelevant"
+  ],
+  "thought": "Bleeding, recovery, when to call the doctor. Useful for a first-timer. I still do not see anything about the toddler.",
+  "emotion": "lukewarm"
+ },
+ "secondtime-000-B:2": {
+  "value": 0.33,
+  "trust": 0.52,
+  "comprehension": 0.8,
+  "friction": 0.03,
+  "curiosity": 0.15,
+  "concerns": [
+   "irrelevant",
+   "no_social_proof"
+  ],
+  "thought": "Data stays on my phone and no account, good. But zero reviews, and it is still built for a first baby.",
+  "emotion": "lukewarm"
+ }
+}

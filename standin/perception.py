@@ -17,6 +17,13 @@ KIND_WEIGHT = {
     "review": 0.5, "privacy": 0.5, "promo": 0.45, "text": 0.4, "link": 0.25, "small": 0.25, "nav": 0.0,
 }
 SMALL_FONT_PX = 13
+READABLE_FRACTION = 0.8   # a screenshot cut off at the screen edge can't be read
+
+
+def visible_fraction(el: Element) -> float:
+    vis_w = max(0.0, min(el.x + el.w, VW) - max(el.x, 0.0))
+    vis_h = max(0.0, min(el.y + el.h, VH) - max(el.y, 0.0))
+    return (vis_w * vis_h) / max(el.w * el.h, 1.0)
 
 
 def salience(el: Element) -> float:
@@ -40,10 +47,14 @@ def attend(visible: list[Element], traits: dict[str, float], situation: list[str
     scored = sorted((e.model_copy(update={"salience": salience(e)}) for e in visible),
                     key=lambda e: e.salience, reverse=True)
     picked: list[Element] = []
-    for e in scored:
+    for rank, e in enumerate(scored):
         if e.salience <= 0:
             continue
+        if e.kind == "screenshot" and visible_fraction(e) < READABLE_FRACTION:
+            e = e.model_copy(update={"text": "(screenshot partly off screen, caption cut off)"})
         p = 0.25 + 0.55 * att + 0.45 * e.salience
+        if rank == 0 and e.id not in already_seen:
+            p = 1.0                      # everyone takes in the single most prominent new thing
         if e.font_px < SMALL_FONT_PX:
             p -= 0.35 if att < 0.55 else 0.1
             if "low_brightness" in situation:

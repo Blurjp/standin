@@ -48,9 +48,10 @@ python -m standin backtest backtests.yaml     # see format in calibrate.backtest
 python -m standin runs
 ```
 
-`--brain claude` needs `ANTHROPIC_API_KEY`. Model: `STANDIN_MODEL` (default `claude-sonnet-5-5`);
-cost estimate uses `STANDIN_PRICE_IN_PER_MTOK` / `STANDIN_PRICE_OUT_PER_MTOK`. Measure real cost per
-journey in week 1 — pricing in the doc depends on it.
+`--brain claude` needs `ANTHROPIC_API_KEY`. Model: `STANDIN_MODEL` (default `claude-sonnet-5-5`, ~$0.009 per
+journey; `claude-haiku-5-5` ~$0.0004). Prices per model live in `brain.PRICES`; override with
+`STANDIN_PRICE_IN_PER_MTOK` / `STANDIN_PRICE_OUT_PER_MTOK`. Auth and unknown-model errors abort the run;
+transient errors fall back to the heuristic for that step and are counted.
 
 Backtest spec:
 
@@ -82,3 +83,10 @@ changes:
 ```bash
 python -m pytest -q
 ```
+
+## Testing the brain without an API key
+
+`scripts/manual_brain.py` replays chosen agents with recorded appraisals and stops at the first step that has
+none, printing exactly what the Claude brain would be sent. Answer it with `scripts/answer.py`, re-run, repeat.
+It ends with outcomes next to the heuristic brain's and an estimated cost per journey per model.
+Results of the first such test: `docs/brain-test-2026-10-08.md`.

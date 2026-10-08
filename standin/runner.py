@@ -18,7 +18,7 @@ import numpy as np
 
 from .agent import run_agent
 from .brain import AgentContext, make_brain
-from .models import AgentSession, Experiment, SimParams
+from .models import AgentSession, Experiment, SimParams, Variant
 from .render import StoreRenderer
 
 
@@ -44,6 +44,22 @@ def new_run_id(exp: Experiment) -> str:
     return f"run-{stamp}-{h}"
 
 
+def session_id(seg_id: str, i: int, variant_id: str) -> str:
+    return f"{seg_id}-{i:03d}-{variant_id}"
+
+
+def make_context(exp: Experiment, seg_index: int, i: int, variant: Variant) -> AgentContext:
+    """Agent i of a segment: same traits and same random stream in every variant (paired design).
+    Traits are drawn sequentially per segment, so agent i depends only on the first i+1 draws."""
+    seg = exp.segments[seg_index]
+    trait_rng = np.random.default_rng([exp.seed, seg_index])
+    traits = [seg.sample(trait_rng) for _ in range(i + 1)][-1]
+    return AgentContext(segment=seg, traits=traits, page=variant.page, goal=exp.journey.goal,
+                        search_terms=exp.journey.search_terms,
+                        rng=np.random.default_rng([exp.seed, 7919, seg_index, i]),
+                        session_id=session_id(seg.id, i, variant.id))
+
+
 async def run_experiment(exp: Experiment, out_dir: Path, *, params: Optional[SimParams] = None,
                          n_per_cell: Optional[int] = None, variant_ids: Optional[list[str]] = None,
                          brain=None, run_id: Optional[str] = None,
@@ -60,26 +76,15 @@ async def run_experiment(exp: Experiment, out_dir: Path, *, params: Optional[Sim
     t0 = time.time()
 
     async def _go(rend: StoreRenderer) -> list[AgentSession]:
-        jobs = []
-        for si, seg in enumerate(exp.segments):
-            trait_rng = np.random.default_rng([exp.seed, si])
-            agents = [seg.sample(trait_rng) for _ in range(n)]
-            for i, traits in enumerate(agents):
-                for v in variants:
-                    jobs.append((seg, i, traits, v))
+        jobs = [(si, i, v) for si in range(len(exp.segments)) for i in range(n) for v in variants]
         done = 0
         total = len(jobs)
 
-        seg_index = {seg.id: si for si, seg in enumerate(exp.segments)}
-
-        async def one(seg, i, traits, v):
+        async def one(si, i, v):
             nonlocal done
             async with sem:
-                # same stream for agent i in every variant -> paired comparison
-                ctx = AgentContext(segment=seg, traits=traits, page=v.page, goal=exp.journey.goal,
-                                   search_terms=exp.journey.search_terms, rng=np.random.default_rng([exp.seed, 7919, seg_index[seg.id], i]))
-                s = await run_agent(f"{seg.id}-{i:03d}-{v.id}", run_id, v.id, ctx, rend, brain,
-                                    params, exp.journey.max_steps)
+                ctx = make_context(exp, si, i, v)
+                s = await run_agent(ctx.session_id, run_id, v.id, ctx, rend, brain, params, exp.journey.max_steps)
             done += 1
             if progress:
                 progress(done, total)

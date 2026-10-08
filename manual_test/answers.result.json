@@ -1,0 +1,831 @@
+{
+ "rows": [
+  {
+   "id": "newmom-000-A",
+   "claude": {
+    "id": "newmom-000-A",
+    "run_id": "manual",
+    "segment_id": "newmom",
+    "variant_id": "A",
+    "traits": {
+     "intent": 0.75,
+     "patience": 0.236,
+     "price_sensitivity": 0.467,
+     "trust_threshold": 0.393,
+     "tech_savvy": 0.495,
+     "attention_budget": 0.02,
+     "privacy_sensitivity": 0.757
+    },
+    "outcome": "install",
+    "abandon_step": null,
+    "abandon_concern": null,
+    "cost_usd": 0.0
+   },
+   "heuristic": {
+    "id": "newmom-000-A",
+    "run_id": "manual-h",
+    "segment_id": "newmom",
+    "variant_id": "A",
+    "traits": {
+     "intent": 0.75,
+     "patience": 0.236,
+     "price_sensitivity": 0.467,
+     "trust_threshold": 0.393,
+     "tech_savvy": 0.495,
+     "attention_budget": 0.02,
+     "privacy_sensitivity": 0.757
+    },
+    "outcome": "install",
+    "abandon_step": null,
+    "abandon_concern": null,
+    "cost_usd": 0.0
+   },
+   "steps": [
+    {
+     "idx": 0,
+     "state_key": "A|s0|c0|e0",
+     "frame": "runs/_manual/frames/47bfc71f8a05.jpg",
+     "attended": [
+      "shot-0",
+      "name"
+     ],
+     "attended_boxes": [
+      [
+       16.0,
+       269.0,
+       228.0,
+       494.0
+      ],
+      [
+       148.0,
+       50.0,
+       226.0,
+       50.0
+      ]
+     ],
+     "action": "tap_get",
+     "hesitation_ms": 3165,
+     "thought": "Postpartum, okay, right topic. But a companion? I need to know if what is happening to me is normal.",
+     "value": 0.4,
+     "trust": 0.5,
+     "comprehension": 0.45,
+     "friction": 0.05,
+     "p_install": 0.206,
+     "p_abandon": 0.168,
+     "concerns": [
+      "unclear_value"
+     ],
+     "emotion": "unsure"
+    }
+   ]
+  },
+  {
+   "id": "newmom-000-B",
+   "claude": {
+    "id": "newmom-000-B",
+    "run_id": "manual",
+    "segment_id": "newmom",
+    "variant_id": "B",
+    "traits": {
+     "intent": 0.75,
+     "patience": 0.236,
+     "price_sensitivity": 0.467,
+     "trust_threshold": 0.393,
+     "tech_savvy": 0.495,
+     "attention_budget": 0.02,
+     "privacy_sensitivity": 0.757
+    },
+    "outcome": "install",
+    "abandon_step": null,
+    "abandon_concern": null,
+    "cost_usd": 0.0
+   },
+   "heuristic": {
+    "id": "newmom-000-B",
+    "run_id": "manual-h",
+    "segment_id": "newmom",
+    "variant_id": "B",
+    "traits": {
+     "intent": 0.75,
+     "patience": 0.236,
+     "price_sensitivity": 0.467,
+     "trust_threshold": 0.393,
+     "tech_savvy": 0.495,
+     "attention_budget": 0.02,
+     "privacy_sensitivity": 0.757
+    },
+    "outcome": "install",
+    "abandon_step": null,
+    "abandon_concern": null,
+    "cost_usd": 0.0
+   },
+   "steps": [
+    {
+     "idx": 0,
+     "state_key": "B|s0|c0|e0",
+     "frame": "runs/_manual/frames/079353d0de2b.jpg",
+     "attended": [
+      "shot-0",
+      "name"
+     ],
+     "attended_boxes": [
+      [
+       16.0,
+       269.0,
+       228.0,
+       494.0
+      ],
+      [
+       148.0,
+       50.0,
+       226.0,
+       50.0
+      ]
+     ],
+     "action": "tap_get",
+     "hesitation_ms": 4961,
+     "thought": "That is literally me right now. In seconds though? Who is telling me what is normal, a real nurse?",
+     "value": 0.72,
+     "trust": 0.48,
+     "comprehension": 0.7,
+     "friction": 0.05,
+     "p_install": 0.611,
+     "p_abandon": 0.067,
+     "concerns": [
+      "low_trust"
+     ],
+     "emotion": "hopeful"
+    }
+   ]
+  },
+  {
+   "id": "partner-000-A",
+   "claude": {
+    "id": "partner-000-A",
+    "run_id": "manual",
+    "segment_id": "partner",
+    "variant_id": "A",
+    "traits": {
+     "intent": 0.692,
+     "patience": 0.369,
+     "price_sensitivity": 0.409,
+     "trust_threshold": 0.568,
+     "tech_savvy": 0.73,
+     "attention_budget": 0.706,
+     "privacy_sensitivity": 0.281
+    },
+    "outcome": "abandon",
+    "abandon_step": 2,
+    "abandon_concern": "generic",
+    "cost_usd": 0.0
+   },
+   "heuristic": {
+    "id": "partner-000-A",
+    "run_id": "manual-h",
+    "segment_id": "partner",
+    "variant_id": "A",
+    "traits": {
+     "intent": 0.692,
+     "patience": 0.369,
+     "price_sensitivity": 0.409,
+     "trust_threshold": 0.568,
+     "tech_savvy": 0.73,
+     "attention_budget": 0.706,
+     "privacy_sensitivity": 0.281
+    },
+    "outcome": "abandon",
+    "abandon_step": 2,
+    "abandon_concern": "unclear_value",
+    "cost_usd": 0.0
+   },
+   "steps": [
+    {
+     "idx": 0,
+     "state_key": "A|s0|c0|e0",
+     "frame": "runs/_manual/frames/47bfc71f8a05.jpg",
+     "attended": [
+      "shot-0",
+      "name",
+      "get",
+      "subtitle",
+      "rating",
+      "description",
+      "age"
+     ],
+     "attended_boxes": [
+      [
+       16.0,
+       269.0,
+       228.0,
+       494.0
+      ],
+      [
+       148.0,
+       50.0,
+       226.0,
+       50.0
+      ],
+      [
+       148.0,
+       139.0,
+       70.0,
+       29.0
+      ],
+      [
+       148.0,
+       102.0,
+       226.0,
+       19.0
+      ],
+      [
+       16.0,
+       193.0,
+       90.0,
+       49.0
+      ],
+      [
+       16.0,
+       786.0,
+       358.0,
+       63.0
+      ],
+      [
+       106.0,
+       193.0,
+       90.0,
+       49.0
+      ]
+     ],
+     "action": "scroll_down",
+     "hesitation_ms": 8318,
+     "thought": "Holistic, AI-powered, zero ratings. Sounds like every wellness app, and nothing says who is behind the advice.",
+     "value": 0.3,
+     "trust": 0.35,
+     "comprehension": 0.6,
+     "friction": 0.05,
+     "p_install": 0.099,
+     "p_abandon": 0.22,
+     "concerns": [
+      "generic",
+      "no_social_proof"
+     ],
+     "emotion": "skeptical"
+    },
+    {
+     "idx": 1,
+     "state_key": "A|s1|c0|e0",
+     "frame": "runs/_manual/frames/bd70632d9fd5.jpg",
+     "attended": [
+      "sticky-get",
+      "privacy-linked",
+      "description",
+      "ratings-summary",
+      "developer"
+     ],
+     "attended_boxes": [
+      [
+       304.0,
+       11.0,
+       70.0,
+       29.0
+      ],
+      [
+       16.0,
+       489.0,
+       358.0,
+       65.0
+      ],
+      [
+       16.0,
+       186.0,
+       358.0,
+       63.0
+      ],
+      [
+       16.0,
+       357.0,
+       358.0,
+       30.0
+      ],
+      [
+       16.0,
+       276.0,
+       358.0,
+       19.0
+      ]
+     ],
+     "action": "expand_description",
+     "hesitation_ms": 8571,
+     "thought": "Still no reviews, and it ties her health data to her contact info. Nothing here tells me how I can help her.",
+     "value": 0.28,
+     "trust": 0.32,
+     "comprehension": 0.62,
+     "friction": 0.08,
+     "p_install": 0.084,
+     "p_abandon": 0.32,
+     "concerns": [
+      "no_social_proof",
+      "generic"
+     ],
+     "emotion": "unconvinced"
+    },
+    {
+     "idx": 2,
+     "state_key": "A|s1|c0|e1",
+     "frame": "runs/_manual/frames/530f42757603.jpg",
+     "attended": [
+      "description"
+     ],
+     "attended_boxes": [
+      [
+       16.0,
+       186.0,
+       358.0,
+       189.0
+      ]
+     ],
+     "action": "leave",
+     "hesitation_ms": 9394,
+     "thought": "Okay, it is a mood tracker with a community. Fine, but I could get that anywhere.",
+     "value": 0.3,
+     "trust": 0.32,
+     "comprehension": 0.7,
+     "friction": 0.08,
+     "p_install": 0.093,
+     "p_abandon": 0.375,
+     "concerns": [
+      "generic"
+     ],
+     "emotion": "indifferent"
+    }
+   ]
+  },
+  {
+   "id": "partner-000-B",
+   "claude": {
+    "id": "partner-000-B",
+    "run_id": "manual",
+    "segment_id": "partner",
+    "variant_id": "B",
+    "traits": {
+     "intent": 0.692,
+     "patience": 0.369,
+     "price_sensitivity": 0.409,
+     "trust_threshold": 0.568,
+     "tech_savvy": 0.73,
+     "attention_budget": 0.706,
+     "privacy_sensitivity": 0.281
+    },
+    "outcome": "install",
+    "abandon_step": null,
+    "abandon_concern": null,
+    "cost_usd": 0.0
+   },
+   "heuristic": {
+    "id": "partner-000-B",
+    "run_id": "manual-h",
+    "segment_id": "partner",
+    "variant_id": "B",
+    "traits": {
+     "intent": 0.692,
+     "patience": 0.369,
+     "price_sensitivity": 0.409,
+     "trust_threshold": 0.568,
+     "tech_savvy": 0.73,
+     "attention_budget": 0.706,
+     "privacy_sensitivity": 0.281
+    },
+    "outcome": "install",
+    "abandon_step": null,
+    "abandon_concern": null,
+    "cost_usd": 0.0
+   },
+   "steps": [
+    {
+     "idx": 0,
+     "state_key": "B|s0|c0|e0",
+     "frame": "runs/_manual/frames/079353d0de2b.jpg",
+     "attended": [
+      "shot-0",
+      "name",
+      "get",
+      "subtitle",
+      "rating",
+      "description",
+      "age"
+     ],
+     "attended_boxes": [
+      [
+       16.0,
+       269.0,
+       228.0,
+       494.0
+      ],
+      [
+       148.0,
+       50.0,
+       226.0,
+       50.0
+      ],
+      [
+       148.0,
+       139.0,
+       70.0,
+       29.0
+      ],
+      [
+       148.0,
+       102.0,
+       226.0,
+       19.0
+      ],
+      [
+       16.0,
+       193.0,
+       90.0,
+       49.0
+      ],
+      [
+       16.0,
+       786.0,
+       358.0,
+       63.0
+      ],
+      [
+       106.0,
+       193.0,
+       90.0,
+       49.0
+      ]
+     ],
+     "action": "tap_get",
+     "hesitation_ms": 13504,
+     "thought": "Clear what it does: is this normal or call the doctor. But it is medical advice from someone I have never heard of, with no ratings.",
+     "value": 0.6,
+     "trust": 0.4,
+     "comprehension": 0.75,
+     "friction": 0.05,
+     "p_install": 0.296,
+     "p_abandon": 0.109,
+     "concerns": [
+      "low_trust",
+      "no_social_proof"
+     ],
+     "emotion": "cautious"
+    }
+   ]
+  },
+  {
+   "id": "secondtime-000-A",
+   "claude": {
+    "id": "secondtime-000-A",
+    "run_id": "manual",
+    "segment_id": "secondtime",
+    "variant_id": "A",
+    "traits": {
+     "intent": 0.571,
+     "patience": 0.339,
+     "price_sensitivity": 0.453,
+     "trust_threshold": 0.68,
+     "tech_savvy": 0.777,
+     "attention_budget": 0.488,
+     "privacy_sensitivity": 0.699
+    },
+    "outcome": "abandon",
+    "abandon_step": 2,
+    "abandon_concern": "generic",
+    "cost_usd": 0.0
+   },
+   "heuristic": {
+    "id": "secondtime-000-A",
+    "run_id": "manual-h",
+    "segment_id": "secondtime",
+    "variant_id": "A",
+    "traits": {
+     "intent": 0.571,
+     "patience": 0.339,
+     "price_sensitivity": 0.453,
+     "trust_threshold": 0.68,
+     "tech_savvy": 0.777,
+     "attention_budget": 0.488,
+     "privacy_sensitivity": 0.699
+    },
+    "outcome": "abandon",
+    "abandon_step": 2,
+    "abandon_concern": "generic",
+    "cost_usd": 0.0
+   },
+   "steps": [
+    {
+     "idx": 0,
+     "state_key": "A|s0|c0|e0",
+     "frame": "runs/_manual/frames/47bfc71f8a05.jpg",
+     "attended": [
+      "shot-0",
+      "name",
+      "shot-1",
+      "get",
+      "subtitle"
+     ],
+     "attended_boxes": [
+      [
+       16.0,
+       269.0,
+       228.0,
+       494.0
+      ],
+      [
+       148.0,
+       50.0,
+       226.0,
+       50.0
+      ],
+      [
+       254.0,
+       269.0,
+       228.0,
+       494.0
+      ],
+      [
+       148.0,
+       139.0,
+       70.0,
+       29.0
+      ],
+      [
+       148.0,
+       102.0,
+       226.0,
+       19.0
+      ]
+     ],
+     "action": "scroll_down",
+     "hesitation_ms": 4065,
+     "thought": "Holistic wellness for new moms. I am not new at this, and I already know the fourth trimester talk.",
+     "value": 0.15,
+     "trust": 0.45,
+     "comprehension": 0.55,
+     "friction": 0.05,
+     "p_install": 0.053,
+     "p_abandon": 0.263,
+     "concerns": [
+      "generic",
+      "irrelevant"
+     ],
+     "emotion": "bored"
+    },
+    {
+     "idx": 1,
+     "state_key": "A|s1|c0|e0",
+     "frame": "runs/_manual/frames/bd70632d9fd5.jpg",
+     "attended": [
+      "sticky-get",
+      "description"
+     ],
+     "attended_boxes": [
+      [
+       304.0,
+       11.0,
+       70.0,
+       29.0
+      ],
+      [
+       16.0,
+       186.0,
+       358.0,
+       63.0
+      ]
+     ],
+     "action": "expand_description",
+     "hesitation_ms": 4166,
+     "thought": "All-in-one, holistic, AI-powered. Nothing about juggling a toddler. Next.",
+     "value": 0.12,
+     "trust": 0.42,
+     "comprehension": 0.6,
+     "friction": 0.05,
+     "p_install": 0.048,
+     "p_abandon": 0.374,
+     "concerns": [
+      "generic"
+     ],
+     "emotion": "bored"
+    },
+    {
+     "idx": 2,
+     "state_key": "A|s1|c0|e1",
+     "frame": "runs/_manual/frames/530f42757603.jpg",
+     "attended": [
+      "description",
+      "ratings-summary"
+     ],
+     "attended_boxes": [
+      [
+       16.0,
+       186.0,
+       358.0,
+       189.0
+      ],
+      [
+       16.0,
+       464.0,
+       358.0,
+       30.0
+      ]
+     ],
+     "action": "leave",
+     "hesitation_ms": 10025,
+     "thought": "Self-care tips and a community. I had all of that last time and it did not help. Nobody has even reviewed it.",
+     "value": 0.12,
+     "trust": 0.38,
+     "comprehension": 0.65,
+     "friction": 0.05,
+     "p_install": 0.048,
+     "p_abandon": 0.484,
+     "concerns": [
+      "generic",
+      "no_social_proof"
+     ],
+     "emotion": "dismissive"
+    }
+   ]
+  },
+  {
+   "id": "secondtime-000-B",
+   "claude": {
+    "id": "secondtime-000-B",
+    "run_id": "manual",
+    "segment_id": "secondtime",
+    "variant_id": "B",
+    "traits": {
+     "intent": 0.571,
+     "patience": 0.339,
+     "price_sensitivity": 0.453,
+     "trust_threshold": 0.68,
+     "tech_savvy": 0.777,
+     "attention_budget": 0.488,
+     "privacy_sensitivity": 0.699
+    },
+    "outcome": "abandon",
+    "abandon_step": 2,
+    "abandon_concern": "irrelevant",
+    "cost_usd": 0.0
+   },
+   "heuristic": {
+    "id": "secondtime-000-B",
+    "run_id": "manual-h",
+    "segment_id": "secondtime",
+    "variant_id": "B",
+    "traits": {
+     "intent": 0.571,
+     "patience": 0.339,
+     "price_sensitivity": 0.453,
+     "trust_threshold": 0.68,
+     "tech_savvy": 0.777,
+     "attention_budget": 0.488,
+     "privacy_sensitivity": 0.699
+    },
+    "outcome": "abandon",
+    "abandon_step": 2,
+    "abandon_concern": "low_trust",
+    "cost_usd": 0.0
+   },
+   "steps": [
+    {
+     "idx": 0,
+     "state_key": "B|s0|c0|e0",
+     "frame": "runs/_manual/frames/079353d0de2b.jpg",
+     "attended": [
+      "shot-0",
+      "name",
+      "shot-1",
+      "get",
+      "subtitle"
+     ],
+     "attended_boxes": [
+      [
+       16.0,
+       269.0,
+       228.0,
+       494.0
+      ],
+      [
+       148.0,
+       50.0,
+       226.0,
+       50.0
+      ],
+      [
+       254.0,
+       269.0,
+       228.0,
+       494.0
+      ],
+      [
+       148.0,
+       139.0,
+       70.0,
+       29.0
+      ],
+      [
+       148.0,
+       102.0,
+       226.0,
+       19.0
+      ]
+     ],
+     "action": "scroll_down",
+     "hesitation_ms": 4741,
+     "thought": "Clearer than most, but what is normal after birth is the part I already know. Is there anything for round two?",
+     "value": 0.3,
+     "trust": 0.45,
+     "comprehension": 0.72,
+     "friction": 0.05,
+     "p_install": 0.096,
+     "p_abandon": 0.197,
+     "concerns": [
+      "irrelevant"
+     ],
+     "emotion": "lukewarm"
+    },
+    {
+     "idx": 1,
+     "state_key": "B|s1|c0|e0",
+     "frame": "runs/_manual/frames/c5ccfe92481f.jpg",
+     "attended": [
+      "sticky-get",
+      "description"
+     ],
+     "attended_boxes": [
+      [
+       304.0,
+       11.0,
+       70.0,
+       29.0
+      ],
+      [
+       16.0,
+       186.0,
+       358.0,
+       63.0
+      ]
+     ],
+     "action": "expand_description",
+     "hesitation_ms": 5572,
+     "thought": "Bleeding, recovery, when to call the doctor. Useful for a first-timer. I still do not see anything about the toddler.",
+     "value": 0.3,
+     "trust": 0.45,
+     "comprehension": 0.75,
+     "friction": 0.05,
+     "p_install": 0.097,
+     "p_abandon": 0.264,
+     "concerns": [
+      "irrelevant"
+     ],
+     "emotion": "lukewarm"
+    },
+    {
+     "idx": 2,
+     "state_key": "B|s1|c0|e1",
+     "frame": "runs/_manual/frames/6f425374aae2.jpg",
+     "attended": [
+      "description",
+      "ratings-summary"
+     ],
+     "attended_boxes": [
+      [
+       16.0,
+       186.0,
+       358.0,
+       147.0
+      ],
+      [
+       16.0,
+       422.0,
+       358.0,
+       30.0
+      ]
+     ],
+     "action": "leave",
+     "hesitation_ms": 11741,
+     "thought": "Data stays on my phone and no account, good. But zero reviews, and it is still built for a first baby.",
+     "value": 0.33,
+     "trust": 0.52,
+     "comprehension": 0.8,
+     "friction": 0.03,
+     "p_install": 0.132,
+     "p_abandon": 0.276,
+     "concerns": [
+      "irrelevant",
+      "no_social_proof"
+     ],
+     "emotion": "lukewarm"
+    }
+   ]
+  }
+ ],
+ "tokens_per_step": [
+  1528.25,
+  86.0
+ ],
+ "steps_per_journey": 2.0
+}

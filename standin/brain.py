@@ -63,6 +63,7 @@ class AgentContext:
     goal: str
     rng: np.random.Generator
     search_terms: list[str] = field(default_factory=list)
+    session_id: str = ""
 
 
 def _clip(x: float, lo: float = 0.0, hi: float = 1.0) -> float:
@@ -233,55 +234,129 @@ def _describe_traits(t: dict[str, float]) -> str:
     return ", ".join(f"{k.replace('_', ' ')}: {lvl(v)}" for k, v in t.items())
 
 
-class ClaudeBrain:
-    """Claude-backed appraisal. Model and prices are configurable via env vars."""
-    name = "claude"
+SYSTEM_PROMPT = (
+    "You simulate one specific real person browsing an App Store product page on their phone. "
+    "Stay in character. You only know what this person noticed; do not use anything else on the screenshot. "
+    "Be as impatient, distracted or skeptical as this person actually is. Never be generous by default."
+)
 
-    def __init__(self) -> None:
-        import anthropic
-        self.client = anthropic.AsyncAnthropic()   # reads ANTHROPIC_API_KEY
-        self.model = os.environ.get("STANDIN_MODEL", "claude-sonnet-5-5")
-        self.price_in = float(os.environ.get("STANDIN_PRICE_IN_PER_MTOK", "3"))
-        self.price_out = float(os.environ.get("STANDIN_PRICE_OUT_PER_MTOK", "15"))
-        self.fallback = HeuristicBrain()
+# USD per million tokens (input, output), from platform.claude.com/docs/en/about-claude/pricing, Oct 2026.
+PRICES = {"claude-sonnet-5-5": (2.0, 10.0), "claude-haiku-5-5": (0.10, 0.50), "claude-opus-5-5": (4.0, 20.0)}
+TOOL_OVERHEAD_TOKENS = 474     # forced tool_choice system prompt; Sonnet 5 figure, Sonnet 5.5 not published
+IMAGE_TOKENS = 434             # ceil(390/28) * ceil(844/28) visual tokens per frame
 
-    async def appraise(self, ctx: AgentContext, attended: list[Element], b: Beliefs, frame: str) -> tuple[Appraisal, float]:
-        seg = ctx.segment
-        noticed = "\n".join(f"- [{e.kind}] {e.text[:300]}" for e in attended) or "- (nothing caught your eye)"
-        prior = (f"value {b.value:.2f}, trust {b.trust:.2f}, comprehension {b.comprehension:.2f}, "
-                 f"friction {b.friction:.2f}. Recent thoughts: {' | '.join(b.thoughts[-3:]) or 'none'}")
-        system = (
-            "You simulate one specific real person browsing an App Store product page on their phone. "
-            "Stay in character. You only know what this person noticed; do not use anything else on the screenshot. "
-            "Be as impatient, distracted or skeptical as this person actually is. Never be generous by default."
-        )
-        user_text = (
-            f"Who you are: {seg.name}. {seg.context}\nSituation: {', '.join(seg.situation) or 'normal'}.\n"
-            f"Your tendencies: {_describe_traits(ctx.traits)}.\nWhat you want: {ctx.goal}.\n"
-            f"Your beliefs so far: {prior}\n\nOn this screen you noticed only:\n{noticed}\n\n"
-            "Update your beliefs with the update_beliefs tool."
-        )
-        img = base64.b64encode(open(frame, "rb").read()).decode()
-        try:
-            resp = await self.client.messages.create(
-                model=self.model, max_tokens=400, system=system, tools=[_TOOL],
+
+def build_request(ctx: AgentContext, attended: list[Element], b: Beliefs, frame: str, model: str) -> dict:
+    """The exact Messages API request the Claude brain sends for one step."""
+    seg = ctx.segment
+    noticed = "\n".join(f"- [{e.kind}] {e.text[:900]}" for e in attended) or "- (nothing caught your eye)"
+    prior = (f"value {b.value:.2f}, trust {b.trust:.2f}, comprehension {b.comprehension:.2f}, "
+             f"friction {b.friction:.2f}. Recent thoughts: {' | '.join(b.thoughts[-3:]) or 'none'}")
+    user_text = (
+        f"Who you are: {seg.name}. {seg.context}\nSituation: {', '.join(seg.situation) or 'normal'}.\n"
+        f"Your tendencies: {_describe_traits(ctx.traits)}.\nWhat you want: {ctx.goal}.\n"
+        f"Your beliefs so far: {prior}\n\nOn this screen you noticed only:\n{noticed}\n\n"
+        "Update your beliefs with the update_beliefs tool."
+    )
+    img = base64.b64encode(open(frame, "rb").read()).decode()
+    return dict(model=model, max_tokens=400, system=SYSTEM_PROMPT, tools=[_TOOL],
                 tool_choice={"type": "tool", "name": "update_beliefs"},
                 messages=[{"role": "user", "content": [
                     {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": img}},
-                    {"type": "text", "text": user_text}]}],
-            )
+                    {"type": "text", "text": user_text}]}])
+
+
+def estimate_input_tokens(req: dict) -> int:
+    """Offline estimate (~4 chars/token for English text and JSON). Use count_tokens for exact figures."""
+    text = req["system"] + json.dumps(req["tools"]) + req["messages"][0]["content"][1]["text"]
+    return TOOL_OVERHEAD_TOKENS + IMAGE_TOKENS + len(text) // 4
+
+
+def parse_appraisal(data: dict) -> Appraisal:
+    a = Appraisal(**{k: (_clip(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else v)
+                     for k, v in data.items() if k in Appraisal.model_fields})
+    a.concerns = [c for c in a.concerns if c in CONCERNS]
+    return a
+
+
+class ClaudeBrain:
+    """Claude-backed appraisal. Model via STANDIN_MODEL; prices from PRICES or env overrides."""
+    name = "claude"
+
+    def __init__(self, client=None) -> None:
+        if client is None:
+            import anthropic
+            client = anthropic.AsyncAnthropic()   # reads ANTHROPIC_API_KEY
+        self.client = client
+        self.model = os.environ.get("STANDIN_MODEL", "claude-sonnet-5-5")
+        p_in, p_out = PRICES.get(self.model, (2.0, 10.0))
+        self.price_in = float(os.environ.get("STANDIN_PRICE_IN_PER_MTOK", p_in))
+        self.price_out = float(os.environ.get("STANDIN_PRICE_OUT_PER_MTOK", p_out))
+        self.fallback = HeuristicBrain()
+        self.calls = 0
+        self.fallbacks = 0
+        self.tokens_in = 0
+        self.tokens_out = 0
+
+    async def appraise(self, ctx: AgentContext, attended: list[Element], b: Beliefs, frame: str) -> tuple[Appraisal, float]:
+        req = build_request(ctx, attended, b, frame, self.model)
+        self.calls += 1
+        try:
+            resp = await self.client.messages.create(**req)
+        except Exception as err:
+            # bad key, no permission or unknown model would turn the whole run into a mislabeled heuristic run
+            if type(err).__name__ in ("AuthenticationError", "PermissionDeniedError", "NotFoundError"):
+                raise
+            return await self._fallback(ctx, attended, b, frame, err)
+        try:
             data = next(c.input for c in resp.content if c.type == "tool_use")
-            cost = (resp.usage.input_tokens * self.price_in + resp.usage.output_tokens * self.price_out) / 1e6
-            a = Appraisal(**{k: (_clip(v) if isinstance(v, (int, float)) else v) for k, v in data.items()})
-            a.concerns = [c for c in a.concerns if c in CONCERNS]
-            if any(e.kind == "privacy" for e in attended):
-                b.seen_privacy = True
-            b.seen.update(e.id for e in attended)
-            return a, cost
-        except Exception as err:  # network, quota, schema: keep the run alive, mark the step
-            a, _ = await self.fallback.appraise(ctx, attended, b, frame)
-            a.thought = f"[heuristic fallback: {type(err).__name__}] {a.thought}"
-            return a, 0.0
+            a = parse_appraisal(data)
+        except Exception as err:   # malformed tool output
+            return await self._fallback(ctx, attended, b, frame, err)
+        self.tokens_in += resp.usage.input_tokens
+        self.tokens_out += resp.usage.output_tokens
+        cost = (resp.usage.input_tokens * self.price_in + resp.usage.output_tokens * self.price_out) / 1e6
+        if any(e.kind == "privacy" for e in attended):
+            b.seen_privacy = True
+        b.seen.update(e.id for e in attended)
+        return a, cost
+
+    async def _fallback(self, ctx, attended, b, frame, err) -> tuple[Appraisal, float]:
+        self.fallbacks += 1
+        a, _ = await self.fallback.appraise(ctx, attended, b, frame)
+        a.thought = f"[heuristic fallback: {type(err).__name__}] {a.thought}"
+        return a, 0.0
+
+
+class NeedAppraisal(Exception):
+    """Raised by ScriptedBrain when a step has no recorded answer yet."""
+    def __init__(self, key: str, request: dict, frame: str, attended: list[Element]):
+        super().__init__(key)
+        self.key, self.request, self.frame, self.attended = key, request, frame, attended
+
+
+class ScriptedBrain:
+    """Replays recorded appraisals keyed by '<session_id>:<step>'. Used for human (or offline model) review:
+    a run is re-executed from the start each time, and stops at the first step with no answer."""
+    name = "scripted"
+
+    def __init__(self, answers: dict[str, dict], model: str = "claude-sonnet-5-5") -> None:
+        self.answers = answers
+        self.model = model
+        self.requests: list[dict] = []    # one per answered step: key + estimated input tokens
+
+    async def appraise(self, ctx: AgentContext, attended: list[Element], b: Beliefs, frame: str) -> tuple[Appraisal, float]:
+        key = f"{ctx.session_id}:{len(b.thoughts)}"
+        req = build_request(ctx, attended, b, frame, self.model)
+        if key not in self.answers:
+            raise NeedAppraisal(key, req, frame, attended)
+        a = parse_appraisal(self.answers[key])
+        self.requests.append({"key": key, "input_tokens": estimate_input_tokens(req),
+                              "output_tokens": len(json.dumps(self.answers[key])) // 4 + 20})
+        if any(e.kind == "privacy" for e in attended):
+            b.seen_privacy = True
+        b.seen.update(e.id for e in attended)
+        return a, 0.0
 
 
 def make_brain(kind: str):
