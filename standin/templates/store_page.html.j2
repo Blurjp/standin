@@ -1,0 +1,159 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; color: #1c1c1e;
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { width: 390px; }
+  .nav { height: 44px; display: flex; align-items: center; padding: 0 16px; color: #0a84ff; font-size: 17px; }
+  .sticky { position: fixed; top: 0; left: 0; width: 390px; height: 52px; background: rgba(249,249,249,.96);
+    border-bottom: 1px solid #e5e5ea; display: none; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 10; }
+  body.scrolled .sticky { display: flex; }
+  .sticky img { width: 30px; height: 30px; border-radius: 7px; }
+  .get { background: #0a84ff; color: #fff; border-radius: 16px; font-weight: 700; font-size: 15px; padding: 5px 20px; display: inline-block; }
+  .header { display: flex; gap: 14px; padding: 6px 16px 14px; }
+  .icon { width: 118px; height: 118px; border-radius: 26px; border: 1px solid #e5e5ea; object-fit: cover; background: #f2f2f7; }
+  .htext { display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+  .name { font-size: 21px; font-weight: 700; line-height: 1.2; }
+  .subtitle { font-size: 15px; color: #8e8e93; margin-top: 2px; }
+  .iap { font-size: 10px; color: #8e8e93; margin-left: 8px; line-height: 1.1; display: inline-block; vertical-align: middle; }
+  .info { display: flex; border-top: 1px solid #e5e5ea; border-bottom: 1px solid #e5e5ea; margin: 0 16px; padding: 10px 0; }
+  .info > div { flex: 1; text-align: center; border-right: 1px solid #e5e5ea; }
+  .info > div:last-child { border-right: none; }
+  .info .k { font-size: 10px; color: #8e8e93; text-transform: uppercase; letter-spacing: .3px; }
+  .info .v { font-size: 18px; font-weight: 700; color: #6c6c70; margin-top: 2px; }
+  .info .s { font-size: 11px; color: #8e8e93; }
+  .shots { display: flex; gap: 10px; padding: 16px 16px 8px; overflow-x: hidden; scroll-behavior: auto; }
+  .shots img { width: 228px; height: 494px; border-radius: 18px; flex: none; border: 1px solid #e5e5ea; object-fit: cover; }
+  .sec { padding: 14px 16px; border-top: 1px solid #e5e5ea; margin: 0 0; }
+  .promo { font-size: 15px; line-height: 1.4; }
+  .desc { font-size: 15px; line-height: 1.4; white-space: pre-line; }
+  .desc.collapsed { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .more { color: #0a84ff; font-size: 15px; }
+  .dev { color: #0a84ff; font-size: 15px; margin-top: 8px; }
+  h2 { font-size: 21px; margin: 0 0 8px; }
+  .small { font-size: 12px; color: #8e8e93; }
+  .ratings { display: flex; align-items: baseline; gap: 10px; }
+  .big { font-size: 52px; font-weight: 700; color: #3a3a3c; }
+  .review { background: #f2f2f7; border-radius: 12px; padding: 12px; margin-top: 10px; }
+  .review .t { font-weight: 600; font-size: 15px; }
+  .review .b { font-size: 14px; line-height: 1.35; margin-top: 4px; }
+  .stars { color: #ff9500; font-size: 12px; }
+  .pcard { border: 1px solid #e5e5ea; border-radius: 12px; padding: 12px; margin-top: 10px; }
+  .pcard .t { font-weight: 600; font-size: 15px; }
+  .pcard .b { font-size: 13px; color: #3a3a3c; margin-top: 4px; }
+</style></head>
+<body>
+<div class="sticky" data-el="sticky-bar" data-kind="nav">
+  {% if icon %}<img src="{{ icon }}">{% else %}<span></span>{% endif %}
+  <span class="get" data-el="sticky-get" data-kind="button">{{ p.price|upper if p.price != 'Get' else 'GET' }}</span>
+</div>
+<div class="nav">‹ Search</div>
+
+<div class="header">
+  {% if icon %}<img class="icon" src="{{ icon }}">{% else %}<div class="icon"></div>{% endif %}
+  <div class="htext">
+    <div>
+      <div class="name" data-el="name" data-kind="title">{{ p.name }}</div>
+      {% if p.subtitle %}<div class="subtitle" data-el="subtitle" data-kind="subtitle">{{ p.subtitle }}</div>{% endif %}
+    </div>
+    <div><span class="get" data-el="get" data-kind="button">{{ p.price|upper if p.price != 'Get' else 'GET' }}</span>
+      {% if p.in_app_purchases %}<span class="iap" data-el="iap" data-kind="small">In-App<br>Purchases</span>{% endif %}</div>
+  </div>
+</div>
+
+<div class="info">
+  <div data-el="rating" data-kind="rating" data-text="{% if p.rating_count >= 5 %}{{ p.rating_count }} ratings, {{ '%.1f'|format(p.rating) }} stars{% else %}Not enough ratings{% endif %}">
+    <div class="k">{{ p.rating_count if p.rating_count >= 5 else 'No' }} Ratings</div>
+    <div class="v">{{ '%.1f'|format(p.rating) if p.rating_count >= 5 else '—' }}</div>
+    <div class="s">{% if p.rating_count >= 5 %}★★★★★{% else %}Not enough{% endif %}</div>
+  </div>
+  <div data-el="age" data-kind="small" data-text="Age {{ p.age_rating }}"><div class="k">Age</div><div class="v">{{ p.age_rating }}</div><div class="s">Years Old</div></div>
+  <div data-el="category" data-kind="small" data-text="Category {{ p.category }}"><div class="k">Category</div><div class="v">⌁</div><div class="s">{{ p.category }}</div></div>
+  <div data-el="developer-chip" data-kind="small" data-text="Developer {{ p.developer }}"><div class="k">Developer</div><div class="v">◉</div><div class="s">{{ p.developer[:14] }}</div></div>
+</div>
+
+<div class="shots" id="shots">
+  {% for s in shots %}<img src="{{ s.src }}" data-el="shot-{{ loop.index0 }}" data-kind="screenshot" data-text="{{ s.caption }}">{% endfor %}
+</div>
+
+{% if p.promo_text %}<div class="sec"><div class="promo" data-el="promo" data-kind="text">{{ p.promo_text }}</div></div>{% endif %}
+
+<div class="sec">
+  <div class="desc collapsed" id="desc" data-el="description" data-kind="text"
+       data-collapsed-text="{{ p.description[:170] }}">{{ p.description }}</div>
+  <div class="more" id="more" data-el="more" data-kind="link">more</div>
+  <div class="dev" data-el="developer" data-kind="link">{{ p.developer }}</div>
+</div>
+
+<div class="sec">
+  <h2>Ratings &amp; Reviews</h2>
+  {% if p.rating_count >= 5 %}
+  <div class="ratings" data-el="ratings-summary" data-kind="rating" data-text="{{ '%.1f'|format(p.rating) }} out of 5, {{ p.rating_count }} ratings">
+    <span class="big">{{ '%.1f'|format(p.rating) }}</span><span class="small">out of 5 · {{ p.rating_count }} Ratings</span></div>
+  {% else %}
+  <div class="small" data-el="ratings-summary" data-kind="rating" data-text="This app hasn't received enough ratings or reviews to display an overview.">This app hasn't received enough ratings or reviews to display an overview.</div>
+  {% endif %}
+  {% for r in p.reviews %}
+  <div class="review" data-el="review-{{ loop.index0 }}" data-kind="review" data-text="{{ r.stars }} stars: {{ r.title }}. {{ r.body }}">
+    <div class="t">{{ r.title }}</div><div class="stars">{{ '★' * r.stars }}</div><div class="b">{{ r.body }}</div></div>
+  {% endfor %}
+</div>
+
+{% if p.whats_new %}<div class="sec"><h2>What's New</h2><div class="desc" data-el="whats-new" data-kind="text">{{ p.whats_new }}</div></div>{% endif %}
+
+<div class="sec">
+  <h2>App Privacy</h2>
+  <div class="small">The developer, {{ p.developer }}, indicated that the app's privacy practices may include handling of data as described below.</div>
+  {% if p.privacy.not_collected %}
+  <div class="pcard" data-el="privacy-not-collected" data-kind="privacy" data-text="Data Not Collected. The developer does not collect any data from this app.">
+    <div class="t">Data Not Collected</div><div class="b">The developer does not collect any data from this app.</div></div>
+  {% endif %}
+  {% if p.privacy.tracking %}
+  <div class="pcard" data-el="privacy-tracking" data-kind="privacy" data-text="Data Used to Track You: {{ p.privacy.tracking|join(', ') }}">
+    <div class="t">Data Used to Track You</div><div class="b">{{ p.privacy.tracking|join(' · ') }}</div></div>
+  {% endif %}
+  {% if p.privacy.linked %}
+  <div class="pcard" data-el="privacy-linked" data-kind="privacy" data-text="Data Linked to You: {{ p.privacy.linked|join(', ') }}">
+    <div class="t">Data Linked to You</div><div class="b">{{ p.privacy.linked|join(' · ') }}</div></div>
+  {% endif %}
+  {% if p.privacy.not_linked %}
+  <div class="pcard" data-el="privacy-not-linked" data-kind="privacy" data-text="Data Not Linked to You: {{ p.privacy.not_linked|join(', ') }}">
+    <div class="t">Data Not Linked to You</div><div class="b">{{ p.privacy.not_linked|join(' · ') }}</div></div>
+  {% endif %}
+</div>
+<div style="height:420px"></div>
+
+<script>
+window.__applyState = (scrollIdx, shotIdx, expanded, step) => {
+  const d = document.getElementById('desc');
+  d.classList.toggle('collapsed', !expanded);
+  document.getElementById('more').style.display = expanded ? 'none' : 'block';
+  const shots = document.getElementById('shots');
+  const first = shots.querySelector('img');
+  shots.scrollLeft = first ? shotIdx * (first.getBoundingClientRect().width + 10) : 0;
+  window.scrollTo(0, scrollIdx * step);
+  document.body.classList.toggle('scrolled', scrollIdx > 0);
+};
+window.__extract = (vw, vh) => {
+  const out = [];
+  document.querySelectorAll('[data-el]').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) return;
+    if (getComputedStyle(el).display === 'none' || el.offsetParent === null && getComputedStyle(el).position !== 'fixed') return;
+    const ix = Math.max(0, Math.min(r.right, vw) - Math.max(r.left, 0));
+    const iy = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+    if (ix * iy < 0.4 * r.width * Math.min(r.height, vh)) return;
+    let text = el.dataset.text;
+    if (!text) {
+      text = (el.id === 'desc' && el.classList.contains('collapsed')) ? el.dataset.collapsedText : el.innerText;
+    }
+    out.push({ id: el.dataset.el, kind: el.dataset.kind, text: (text || '').trim().slice(0, 900),
+      x: r.left, y: r.top, w: r.width, h: r.height,
+      font_px: parseFloat(getComputedStyle(el.querySelector('.b, .t') || el).fontSize) || 15 });
+  });
+  return out;
+};
+</script>
+</body></html>

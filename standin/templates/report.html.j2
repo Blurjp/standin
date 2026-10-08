@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StandIn · {{ exp.name }}</title>
+<style>
+:root { --ink:#16181d; --muted:#5f6672; --faint:#8a909b; --line:#e3e5e9; --bg:#f6f7f9; --card:#fff;
+  --good:#2b8a3e; --warn:#b7791f; --bad:#c92a2a; --accent:#2563eb; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 -apple-system, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+.wrap { max-width:1120px; margin:0 auto; padding:24px 20px 80px; }
+header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+.brand { font-weight:700; letter-spacing:-.2px; font-size:14px; color:var(--muted); }
+h1 { font-size:26px; margin:2px 0 4px; letter-spacing:-.4px; }
+h2 { font-size:18px; margin:0 0 12px; letter-spacing:-.2px; }
+.meta { color:var(--muted); font-size:13px; }
+.badge { display:inline-flex; gap:8px; align-items:center; border-radius:999px; padding:6px 12px; font-size:13px; font-weight:600; border:1px solid; max-width:460px; }
+.badge.uncalibrated { color:#8a5a00; background:#fff7e6; border-color:#f3d39a; }
+.badge.calibrated { color:#1c5fb8; background:#eef5ff; border-color:#b8d3f5; }
+.badge.backtested { color:#1f6f34; background:#ecf8ef; border-color:#a9dbb5; }
+section { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin-top:16px; }
+.verdict { display:grid; grid-template-columns: 1.3fr 1fr; gap:20px; align-items:center; }
+.headline { font-size:24px; font-weight:700; letter-spacing:-.3px; line-height:1.25; }
+.sub { color:var(--muted); margin-top:6px; }
+.tiles { display:flex; gap:12px; flex-wrap:wrap; }
+.tile { flex:1; min-width:150px; border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
+.tile .k { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+.tile .v { font-size:28px; font-weight:700; letter-spacing:-.5px; }
+.dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
+.ci { position:relative; height:34px; margin-top:14px; }
+.ci .axis { position:absolute; top:16px; left:0; right:0; height:1px; background:var(--line); }
+.ci .zero { position:absolute; top:6px; width:1px; height:22px; background:var(--faint); }
+.ci .bar { position:absolute; top:11px; height:11px; border-radius:6px; background:#c7d7fb; }
+.ci .pt { position:absolute; top:9px; width:15px; height:15px; margin-left:-7px; border-radius:50%; background:var(--accent); border:2px solid #fff; }
+.ci .lab { position:absolute; top:-2px; font-size:11px; color:var(--faint); }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); }
+th { font-size:12px; color:var(--muted); font-weight:600; }
+td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; }
+.pos { color:var(--good); font-weight:600; } .neg { color:var(--bad); font-weight:600; }
+.chart { width:100%; max-width:680px; height:auto; }
+.chart .grid { stroke:var(--line); } .chart .tick { font-size:11px; fill:var(--faint); }
+.legend { display:flex; gap:16px; font-size:13px; color:var(--muted); margin-bottom:6px; }
+.findings { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); gap:12px; }
+.finding { border:1px solid var(--line); border-radius:12px; padding:14px; }
+.finding .top { display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
+.finding .t { font-weight:650; }
+.finding .share { font-size:20px; font-weight:700; }
+.finding .rec { margin-top:8px; font-size:14px; }
+.chip { display:inline-block; font-size:12px; border:1px solid var(--line); border-radius:999px; padding:1px 8px; margin:4px 4px 0 0; color:var(--muted); background:#fafbfc; }
+.chip.ev { cursor:pointer; color:var(--accent); border-color:#c7d7fb; background:#f4f8ff; }
+.vtag { font-size:12px; font-weight:600; }
+.heat td.cell { text-align:center; font-variant-numeric:tabular-nums; font-size:13px; }
+.checks li { margin:4px 0; }
+/* replay */
+.replay { display:grid; grid-template-columns: 260px 1fr; gap:18px; }
+.filters { display:flex; flex-direction:column; gap:8px; }
+select { font:inherit; font-size:13px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; background:#fff; }
+.slist { max-height:520px; overflow:auto; border:1px solid var(--line); border-radius:10px; }
+.slist div { padding:7px 10px; font-size:13px; border-bottom:1px solid var(--line); cursor:pointer; display:flex; justify-content:space-between; }
+.slist div:hover { background:#f4f6f8; } .slist div.on { background:#eaf1ff; }
+.out-install { color:var(--good); } .out-abandon { color:var(--bad); } .out-stuck { color:var(--warn); }
+.viewer { display:grid; grid-template-columns: 300px 1fr; gap:18px; align-items:start; }
+.phone { position:relative; width:300px; border-radius:22px; overflow:hidden; border:1px solid var(--line); background:#fff; }
+.phone img { display:block; width:300px; }
+.box { position:absolute; border:2px solid rgba(37,99,235,.85); background:rgba(37,99,235,.10); border-radius:6px; }
+.steps { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0; }
+.steps button { font:inherit; font-size:12px; border:1px solid var(--line); background:#fff; border-radius:8px; padding:3px 9px; cursor:pointer; }
+.steps button.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+.thought { font-size:17px; font-style:italic; margin:8px 0 10px; }
+.meter { display:grid; grid-template-columns:110px 1fr 44px; gap:8px; align-items:center; font-size:13px; margin:5px 0; }
+.meter .track { height:8px; background:#eef0f3; border-radius:5px; overflow:hidden; } .meter .fill { height:100%; background:var(--accent); }
+.kv { font-size:13px; color:var(--muted); }
+.action { display:inline-block; font-weight:700; font-size:13px; padding:3px 10px; border-radius:8px; background:#f1f3f5; }
+.action.tap_get { background:#e6f6ea; color:var(--good); } .action.leave { background:#fdeaea; color:var(--bad); }
+@media (max-width: 820px) { .verdict, .replay, .viewer { grid-template-columns:1fr; } }
+</style></head>
+<body><div class="wrap">
+
+<header>
+  <div>
+    <div class="brand">StandIn · behavioral simulation report</div>
+    <h1>{{ exp.name }}</h1>
+    <div class="meta">{{ exp.app }} · {{ result.run_id }} · {{ created }} · brain: {{ result.brain }} ·
+      {{ result.n_per_cell }} agents per segment × variant ({{ result.sessions|length }} journeys) · {{ result.seconds }} s
+      {% if result.cost_usd %} · ${{ '%.2f'|format(result.cost_usd) }}{% endif %}</div>
+  </div>
+  <div class="badge {{ fidelity.level }}">● {{ fidelity.text }}</div>
+</header>
+
+{% for c in an.comparisons %}
+<section class="verdict">
+  <div>
+    {% set d = c.diff * 100 %}
+    <div class="headline">
+      {% if c.ci_low > 0 %}{{ vnames[c.challenger] }} gets more installs than {{ vnames[c.baseline] }}
+      {% elif c.ci_high < 0 %}{{ vnames[c.baseline] }} gets more installs than {{ vnames[c.challenger] }}
+      {% else %}No clear winner between {{ vnames[c.baseline] }} and {{ vnames[c.challenger] }}{% endif %}
+    </div>
+    <div class="sub">{{ '%+.1f'|format(d) }} pp install rate (95% interval {{ '%+.1f'|format(c.ci_low*100) }} to {{ '%+.1f'|format(c.ci_high*100) }} pp,
+      paired across the same simulated people). Probability {{ vnames[c.challenger] }} is better: {% if c.p_better > 0.99 %}&gt;99%{% elif c.p_better < 0.01 %}&lt;1%{% else %}{{ '%.0f'|format(c.p_better*100) }}%{% endif %}.</div>
+    {% set lo = [c.ci_low*100, -5, d]|min - 3 %}{% set hi = [c.ci_high*100, 5, d]|max + 3 %}{% set span = hi - lo %}
+    <div class="ci">
+      <div class="axis"></div>
+      <div class="zero" style="left:{{ (0 - lo) / span * 100 }}%"></div><div class="lab" style="left:calc({{ (0 - lo) / span * 100 }}% + 4px)">0</div>
+      <div class="bar" style="left:{{ (c.ci_low*100 - lo) / span * 100 }}%; width:{{ (c.ci_high - c.ci_low)*100 / span * 100 }}%"></div>
+      <div class="pt" style="left:{{ (d - lo) / span * 100 }}%"></div>
+    </div>
+    <div class="kv">A relative call, not a forecast of your real install rate. Read it with the badge above.</div>
+  </div>
+  <div class="tiles">
+    {% for v in [c.baseline, c.challenger] %}
+    <div class="tile"><div class="k"><span class="dot" style="background:{{ colors[v] }}"></span>{{ vnames[v] }}</div>
+      <div class="v">{{ '%.0f'|format(an.overall[v]*100) }}%</div><div class="kv">simulated installs, segment-weighted</div></div>
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+
+<section>
+  <h2>By segment</h2>
+  <table>
+    <tr><th>Segment</th><th class="num">Traffic weight</th>{% for v in an.overall %}<th class="num">{{ vnames[v] }}</th>{% endfor %}{% if an.overall|length > 1 %}<th class="num">Change</th>{% endif %}</tr>
+    {% for s in exp.segments %}
+    {% set vs = an.overall|list %}
+    <tr><td>{{ s.name }}</td><td class="num">{{ '%.0f'|format(s.weight * 100 / (exp.segments|sum(attribute='weight'))) }}%</td>
+      {% for v in vs %}<td class="num">{{ '%.0f'|format(an.rates[v][s.id]*100) }}%</td>{% endfor %}
+      {% if vs|length > 1 %}{% set ch = (an.rates[vs[1]][s.id] - an.rates[vs[0]][s.id]) * 100 %}
+      <td class="num {{ 'pos' if ch > 0 else 'neg' if ch < 0 else '' }}">{{ '%+.0f'|format(ch) }} pp</td>{% endif %}</tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section>
+  <h2>When people give up</h2>
+  <div class="legend">{% for v in an.survival %}<span><span class="dot" style="background:{{ colors[v] }}"></span> {{ vnames[v] }}</span>{% endfor %}</div>
+  {{ survival_svg|safe }}
+  <div class="kv">Cumulative share of simulated visitors who left without installing, by the screen they were on (segment-weighted). A steep start means the first screen is losing people.</div>
+</section>
+
+<section>
+  <h2>Why people leave</h2>
+  <div class="findings">
+  {% for f in findings %}
+    <div class="finding">
+      <div class="top"><span class="vtag" style="color:{{ colors[f.variant_id] }}">{{ vnames[f.variant_id] }}</span>
+        <span class="share">{{ '%.0f'|format(f.share*100) }}%</span></div>
+      <div class="t">{{ f.title }}</div>
+      <div class="kv">of visitors leave with this as their main reason · last looked at: {{ label(f.element) }}
+        {% if f.vs_baseline is not none %} · <span class="{{ 'pos' if f.vs_baseline < 0 else 'neg' }}">{{ '%+.0f'|format(f.vs_baseline*100) }} pp vs baseline</span>{% endif %}</div>
+      <div>{% for g, sh in f.segments.items() %}<span class="chip">{{ snames[g] }} {{ '%.0f'|format(sh*100) }}%</span>{% endfor %}</div>
+      <div class="rec">{{ f.recommendation }}</div>
+      <div>{% for e in f.evidence %}<span class="chip ev" data-sid="{{ e }}">▶ {{ e }}</span>{% endfor %}</div>
+    </div>
+  {% endfor %}
+  </div>
+</section>
+
+<section>
+  <h2>What they actually noticed</h2>
+  <table class="heat">
+    <tr><th>Element</th>{% for v, g in attention_cols %}<th class="num" style="text-align:center">{{ v }}<br><span style="font-weight:400">{{ g }}</span></th>{% endfor %}</tr>
+    {% for r in attention_rows %}
+    <tr><td>{{ r.el }}</td>{% for c in r.cells %}<td class="cell" style="background:rgba(37,99,235,{{ c/100*0.55 }}); color:{{ '#fff' if c > 70 else 'inherit' }}">{{ c }}%</td>{% endfor %}</tr>
+    {% endfor %}
+  </table>
+  <div class="kv" style="margin-top:8px">Share of visitors in each cell who took in the element at least once. Something nobody sees cannot help or hurt.</div>
+</section>
+
+<section>
+  <h2>Replay</h2>
+  <div class="replay">
+    <div class="filters">
+      <select id="fv"><option value="">All variants</option>{% for v in exp.variants %}<option value="{{ v.id }}">{{ v.label }}</option>{% endfor %}</select>
+      <select id="fg"><option value="">All segments</option>{% for s in exp.segments %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}</select>
+      <select id="fo"><option value="">All outcomes</option><option>install</option><option>abandon</option><option>stuck</option></select>
+      <div class="slist" id="slist"></div>
+    </div>
+    <div id="viewer" class="viewer"></div>
+  </div>
+</section>
+
+{% if an.checks %}
+<section><h2>Sanity checks</h2><ul class="checks">{% for c in an.checks %}<li>{{ c }}</li>{% endfor %}</ul></section>
+{% endif %}
+
+<section>
+  <h2>Variants and method</h2>
+  <ul>{% for v in exp.variants %}<li><b>{{ v.label }}</b>{% if v.note %}: {{ v.note }}{% endif %}</li>{% endfor %}</ul>
+  <div class="kv">Each simulated person samples seven traits from their segment's distribution and sees each variant with the same traits and random stream.
+    Per screen they notice only what their attention budget allows; a brain ({{ result.brain }}) updates value, trust, comprehension and friction;
+    installing and leaving are decided by fixed formulas (install threshold {{ result.params.install_bar }}, base hazard {{ result.params.base_hazard }}), not by the language model.</div>
+</section>
+</div>
+
+<script id="data" type="application/json">{{ data_json|replace('</', '<\\/')|safe }}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const $ = s => document.querySelector(s);
+const pct = x => Math.round(x * 100) + '%';
+let cur = null, curStep = 0;
+function list() {
+  const v = $('#fv').value, g = $('#fg').value, o = $('#fo').value;
+  const rows = D.sessions.filter(s => (!v || s.variant === v) && (!g || s.segment === g) && (!o || s.outcome === o));
+  $('#slist').innerHTML = rows.map(s => `<div data-sid="${s.id}" class="${cur && cur.id === s.id ? 'on' : ''}">
+    <span>${s.id}</span><span class="out-${s.outcome}">${s.outcome}</span></div>`).join('');
+}
+function open(id, step) {
+  cur = D.sessions.find(s => s.id === id); curStep = step ?? 0; list(); draw();
+}
+function bar(name, v) { return `<div class="meter"><span>${name}</span><div class="track"><div class="fill" style="width:${v*100}%"></div></div><span>${pct(v)}</span></div>`; }
+function draw() {
+  if (!cur) { $('#viewer').innerHTML = '<div class="kv">Pick a session, or click ▶ on a finding.</div>'; return; }
+  const st = cur.steps[curStep], k = 300 / 390;
+  const boxes = st.attended_boxes.map(b => `<div class="box" style="left:${b[0]*k}px;top:${b[1]*k}px;width:${b[2]*k}px;height:${Math.min(b[3], 844 - b[1])*k}px"></div>`).join('');
+  const traits = Object.entries(cur.traits).map(([t, v]) => `<span class="chip">${t.replace('_',' ')} ${pct(v)}</span>`).join('');
+  $('#viewer').innerHTML = `
+    <div><div class="phone"><img src="${D.frames[st.frame]}">${boxes}</div></div>
+    <div>
+      <div class="kv">${D.vnames[cur.variant]} · ${D.snames[cur.segment]} · outcome <b class="out-${cur.outcome}">${cur.outcome}</b>${cur.concern && cur.outcome !== 'install' ? ' · ' + (D.concerns[cur.concern] || cur.concern) : ''}</div>
+      <div class="steps">${cur.steps.map((s, i) => `<button class="${i === curStep ? 'on' : ''}" data-step="${i}">${i + 1}</button>`).join('')}</div>
+      <div><span class="action ${st.action}">${st.action.replace('_', ' ')}</span> <span class="kv">after ${(st.hesitation_ms/1000).toFixed(1)} s · feeling ${st.emotion}</span></div>
+      <div class="thought">${st.thought}</div>
+      ${bar('Value', st.value)}${bar('Trust', st.trust)}${bar('Comprehension', st.comprehension)}${bar('Friction', st.friction)}
+      <div class="kv" style="margin-top:6px">P(install now) ${pct(st.p_install)} · P(leave now) ${pct(st.p_abandon)}</div>
+      <div class="kv" style="margin-top:10px"><b>Noticed:</b> ${st.attended_labels.join(', ') || 'nothing'}</div>
+      ${st.concerns.length ? `<div class="kv"><b>Concerns:</b> ${st.concerns.map(c => D.concerns[c] || c).join('; ')}</div>` : ''}
+      <div style="margin-top:10px">${traits}</div>
+    </div>`;
+}
+document.addEventListener('click', e => {
+  const s = e.target.closest('[data-sid]'); if (s) { open(s.dataset.sid); if (s.classList.contains('ev')) $('#viewer').scrollIntoView({behavior:'smooth', block:'start'}); return; }
+  const b = e.target.closest('[data-step]'); if (b) { curStep = +b.dataset.step; draw(); }
+});
+['#fv','#fg','#fo'].forEach(id => $(id).addEventListener('change', list));
+document.addEventListener('keydown', e => { if (!cur) return;
+  if (e.key === 'ArrowRight') { curStep = Math.min(curStep + 1, cur.steps.length - 1); draw(); }
+  if (e.key === 'ArrowLeft') { curStep = Math.max(curStep - 1, 0); draw(); } });
+list(); draw();
+</script>
+</body></html>

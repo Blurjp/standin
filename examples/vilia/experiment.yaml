@@ -1,0 +1,122 @@
+# Vilia App Store page: current screenshots vs a redesign.
+# EVERYTHING marked PLACEHOLDER must be replaced with your real page before results mean anything:
+# screenshots + their captions, subtitle, description, privacy label, IAP flag.
+name: "Vilia store page: current vs redesign"
+app: "Vilia: Postpartum Support"
+n_per_cell: 60
+seed: 7
+brain: heuristic          # 'claude' for LLM appraisal (needs ANTHROPIC_API_KEY)
+journey:
+  template: store_page_install
+  goal: "Find something that helps with life right after giving birth, and decide whether to download it"
+  search_terms: ["postpartum", "after birth", "fourth trimester", "new moms", "recovery"]
+  max_steps: 12
+
+segments:
+  - id: newmom
+    name: "New mom, 0-6 weeks"
+    weight: 0.55
+    context: >-
+      Gave birth a few weeks ago. Feeding the baby at 3am, phone in one hand, screen dimmed,
+      exhausted. Searched the App Store because something feels off and she wants to know if it's normal.
+    situation: [low_brightness, one_handed, interrupted]
+    traits:
+      intent: {mean: 0.75}
+      patience: {mean: 0.30}
+      price_sensitivity: {mean: 0.50}
+      trust_threshold: {mean: 0.50}
+      tech_savvy: {mean: 0.55}
+      attention_budget: {mean: 0.30}
+      privacy_sensitivity: {mean: 0.75}
+    needs: ["3am", "night", "what's normal", "normal after birth", "recovery", "bleeding",
+            "breastfeeding", "sleep", "one-handed", "answers", "in seconds"]
+    turnoffs: ["journey"]
+
+  - id: partner
+    name: "Partner or family member"
+    weight: 0.25
+    context: >-
+      Searching on her behalf in the evening. Reads carefully, compares apps, wants to know
+      it's credible and how he can actually help.
+    traits:
+      intent: {mean: 0.65}
+      patience: {mean: 0.65}
+      price_sensitivity: {mean: 0.45}
+      trust_threshold: {mean: 0.65}
+      tech_savvy: {mean: 0.65}
+      attention_budget: {mean: 0.70}
+      privacy_sensitivity: {mean: 0.55}
+    needs: ["partner", "how to help", "help tonight", "what's normal", "warning signs",
+            "needs a call", "call your doctor", "doctor", "nurse"]
+    turnoffs: ["daily wellness tips"]
+
+  - id: secondtime
+    name: "Second-time mom"
+    weight: 0.20
+    context: >-
+      Has done this before, has a toddler too. Picky; generic advice feels useless.
+      Wants something specific she didn't get the first time.
+    traits:
+      intent: {mean: 0.55}
+      patience: {mean: 0.40}
+      price_sensitivity: {mean: 0.60}
+      trust_threshold: {mean: 0.60}
+      tech_savvy: {mean: 0.60}
+      attention_budget: {mean: 0.50}
+      privacy_sensitivity: {mean: 0.65}
+    needs: ["second baby", "toddler", "sibling", "round two", "specific", "what's normal"]
+    turnoffs: ["daily wellness tips", "journey", "companion", "for new moms", "self-care"]
+
+variants:
+  - id: A
+    label: "A · Current"
+    note: "PLACEHOLDER approximation of a typical current page: feature-list captions, generic subtitle."
+    page:
+      name: "Vilia: Postpartum Support"
+      subtitle: "Holistic wellness for new moms"          # PLACEHOLDER
+      developer: "Vilia Health"                          # PLACEHOLDER
+      icon: assets/icon.png
+      category: "Health & Fitness"
+      age_rating: "12+"
+      in_app_purchases: false                            # PLACEHOLDER
+      rating_count: 0
+      screenshots:
+        - {image: assets/a1.png, caption: "Your postpartum companion. Everything for your fourth trimester"}
+        - {image: assets/a2.png, caption: "Track your recovery journey. Log symptoms, mood and milestones"}
+        - {image: assets/a3.png, caption: "AI-powered personalized insights. Smart guidance tailored to you"}
+        - {image: assets/a4.png, caption: "Join a supportive community. Connect with moms like you"}
+        - {image: assets/a5.png, caption: "Daily wellness tips for new moms. Self-care made simple"}
+      description: >-
+        Vilia is your all-in-one postpartum wellness companion. Our holistic platform empowers new moms
+        to track their recovery journey, understand their mood, and get AI-powered personalized insights.
+        Join a supportive community of moms, explore daily self-care tips, and feel more like yourself again.
+        Features: recovery tracker, mood check-ins, personalized insights, community circles, daily tips.
+      privacy:                                           # PLACEHOLDER: copy your real App Privacy answers
+        linked: ["Health & Fitness", "Contact Info", "Identifiers"]
+
+  - id: B
+    label: "B · Redesign"
+    note: >-
+      Screenshot 1 states the core promise; screenshot 2 is about privacy. Assumes health data is
+      actually kept on-device - only ship the privacy claims if they are true.
+    page:
+      name: "Vilia: Postpartum Support"
+      subtitle: "Postpartum answers at 3am"
+      developer: "Vilia Health"
+      icon: assets/icon.png
+      category: "Health & Fitness"
+      age_rating: "12+"
+      in_app_purchases: false
+      rating_count: 0
+      screenshots:
+        - {image: assets/b1.png, caption: "Answers at 3am, one-handed. Know what's normal after birth in seconds"}
+        - {image: assets/b2.png, caption: "Your health data stays on your phone. No ads. No tracking. Never sold."}
+        - {image: assets/b3.png, caption: "Bleeding, sleep, breastfeeding. What's normal, what needs a call"}
+        - {image: assets/b4.png, caption: "For partners: how to help tonight. Simple things that make a difference"}
+        - {image: assets/b5.png, caption: "Second baby? Plans that fit a toddler too. Specific help for round two"}
+      description: >-
+        It's 3am and something feels off. Vilia tells you what's normal after birth and what needs a call
+        to your doctor, in plain words you can read one-handed. Bleeding, recovery, sleep, breastfeeding,
+        mood. For partners: what to do tonight. Your health data stays on your phone: no account, no ads, no tracking.
+      privacy:
+        not_collected: true
